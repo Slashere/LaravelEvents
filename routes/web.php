@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\SiteController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\SiteStatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +20,21 @@ Route::get('/', function () {
     return view('welcome');
 })->name('/');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::resource('/dashboard/site', SiteController::class)->only([
+    'create',
+    'store',
+    'destroy'
+])->middleware('auth');
 
-require __DIR__.'/auth.php';
+Route::resource('/dashboard/site_stat', SiteStatController::class)->only([
+    'show',
+    'store',
+    'destroy'
+])->middleware('auth');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard.index');
+
+
+require __DIR__ . '/auth.php';
